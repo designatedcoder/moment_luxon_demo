@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -50,6 +52,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'created_format'
     ];
 
     /**
@@ -62,6 +65,17 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            // 'created_at' => 'datetime:F j, Y'
         ];
+    }
+
+    /**
+     * Get the user's formatted created_at.
+     */
+    protected function createdFormat(): Attribute {
+        return new Attribute(
+            fn($value, $attributes)
+            => Carbon::create($attributes['created_at'])->format('F j, Y')
+        );
     }
 }
